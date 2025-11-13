@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Over Car — Location de voitures</title>
+  <style>
+    :root{--primary:#4b2004;--dark:#0f1723;--muted:#6b7280;--card:#ffffff}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:#f5f7fb; color:var(--dark)}
+    header{background:linear-gradient(90deg,#0f1723 0%, #111827 50%); color:#fff; padding:28px 20px}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{margin:0;font-size:22px}
+    p.lead{color:#d1d5db;margin:6px 0 0}
+    .hero{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:18px}
+    .hero-left{flex:1;min-width:280px}
+    .cta{margin-top:14px;display:flex;gap:12px}
+    .btn{background:var(--primary);color:#fff;padding:12px 18px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .btn.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.18)}
+    .hero-right{flex:1;min-width:280px}
+    .cars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:28px}
+    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(15,23,35,0.06)}
+    .car-photo{height:140px;border-radius:8px;background:#e6eef8;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)}
+    .car-title{font-weight:700;margin:10px 0 6px}
+    .car-meta{color:var(--muted);font-size:14px}
+    .price{margin-top:8px;font-weight:800}
+    footer{padding:24px 0;color:var(--muted);text-align:center}
+
+    /* booking modal */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:18px}
+    .modal.show{display:flex}
+    .modal-card{background:#fff;border-radius:12px;max-width:520px;width:100%;padding:18px}
+    label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
+    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ee;margin-top:6px}
+    .flex{display:flex;gap:10px}
+    .whatsapp{position:fixed;right:18px;bottom:18px;background:#25D366;color:#fff;padding:12px 14px;border-radius:50px;display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;box-shadow:0 8px 20px rgba(37,211,102,0.18)}
+    .map{border-radius:8px;overflow:hidden;margin-top:14px}
+    @media(max-width:720px){.hero{flex-direction:column}.brand h1{font-size:18px}}
+    /* Animation flotte (hover smooth) */
+.cars-grid .card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cars-grid .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Over Car</h1>
+          <p class="lead">Roulez sans limites — réservation simple, assistance 24/7</p>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="hero-left">
+          <h2 style="color:#fff;margin-top:18px">Besoin d'une voiture aujourd'hui ?</h2>
+          <p style="color:#d1d5db">Choisissez parmi notre flotte 100% Dacia + Renault Express. Location courte et longue durée.</p>
+          <div class="cta">
+            <button class="btn" id="openBook">Réserver maintenant</button>
+            <button class="btn secondary" onclick="document.getElementById('fleet').scrollIntoView({behavior:'smooth'})">Voir nos véhicules</button>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 10px 30px rgba(2,6,23,0.12)">
+            <h3 style="margin:0 0 8px">Réservation rapide</h3>
+            <form id="quickForm">
+              <label for="qName">Nom complet</label>
+              <input id="qName" placeholder="Ex: Yassine" required />
+              <label for="qPhone">Téléphone</label>
+              <input id="qPhone" placeholder="+2126xxxxxxxx" required />
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <input id="qFrom" type="date" />
+                <input id="qTo" type="date" />
+              </div>
+              <button class="btn" style="width:100%;margin-top:10px" type="submit">Demander un devis</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="fleet">
+      <h2 style="margin-top:18px">Notre flotte</h2>
+      <p style="color:var(--muted)">Véhicules disponibles — toutes révisées et assurées</p>
+      <div class="cars-grid" id="cars"></div>
+    </section>
+
+    <section style="margin-top:28px">
+      <h2>Services</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px">
+        <div class="card"><strong>Location sans chauffeur</strong><p class="car-meta">Location courte ou longue durée</p></div>
+        <div class="card"><strong>Livraison</strong><p class="car-meta">Livraison à domicile ou à l'aéroport</p></div>
+        <div class="card"><strong>Assistance 24/7</strong><p class="car-meta">Support et dépannage inclus</p></div>
+      </div>
+    </section>
+
+    <section style="margin-top:28px">
+      <h2>Contact</h2>
+      <p class="car-meta">Appelez-nous ou écrivez via WhatsApp</p>
+      <div style="display:grid;grid-template-columns:1fr 350px;gap:12px;margin-top:12px">
+        <div class="card">
+          <h3>Formulaire de contact</h3>
+          <form id="contactForm">
+            <label>Nom</label>
+            <input id="cName" />
+            <label>Message</label>
+            <input id="cMsg" />
+            <button class="btn" style="margin-top:10px" type="submit">Envoyer</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Où nous trouver</h3>
+          <div class="map">
+            <iframe width="100%" height="200" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d..." style="border:0"></iframe>
+          </div>
+          <p class="car-meta" style="margin-top:8px">Adresse : Casablanca, N° 119, Bloc 58 1er Etage Sidi Othmane</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:28px">
+      <h2>Témoignages</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px">
+        <div class="card" style="flex:1;min-width:220px"><strong>Youssef</strong><p class="car-meta">Service rapide et voiture propre. 5★</p></div>
+        <div class="card" style="flex:1;min-width:220px"><strong>Sara</strong><p class="car-meta">Livraison à l'aéroport, impeccable.</p></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Over Car — Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <a class="whatsapp" id="waBtn" href="https://wa.me/212600000000" target="_blank">WhatsApp</a>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <h3 id="modalTitle">Réserver une voiture</h3>
+      <form id="bookForm">
+        <label>Modèle</label>
+        <select id="bModel"></select>
+        <label>Nom complet</label>
+        <input id="bName" required />
+        <label>Téléphone</label>
+        <input id="bPhone" required />
+        <div class="flex">
+          <div style="flex:1"><label>Date de début</label><input id="bFrom" type="date" required /></div>
+          <div style="flex:1"><label>Date de fin</label><input id="bTo" type="date" required /></div>
+        </div>
+        <button class="btn" style="margin-top:12px" type="submit">Confirmer la réservation</button>
+        <button type="button" style="margin-top:12px;margin-left:8px" onclick="closeModal()" class="btn secondary">Annuler</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Fleet data
+    const fleet = [
+      { id:1, brand:'Dacia', model:'Logan', price:250, seats:5, img:'https://www.dacia.ma/agg/vn/unique/grade_carrousel_main_1_small/grade_carrousel_1.png?uri=https%3A%2F%2Fma.co.rplug.renault.com%2Fproduct%2Fmodel%2FLI1%2Flogan%2Fc%2FA-ENS_0MDL2P1SERIESPE2_-NV676' },
+      { id:2, brand:'Dacia', model:'Stepway', price:250, seats:5, img:'https://autohub.ma/wp-content/uploads/2024/05/dacia_sandero-2024.webp' },
+      { id:3, brand:'Dacia', model:'Streetway', price:230, seats:5, img:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgEssz_RqXMZHQ9_XYx5PCLohNyms04239YZbzMgO89bT9utVweW1CXqQ56zaNFJqsmmN3F9scPM4hKecA80AIEwBs1L0VHOqQiVMq7p8sXDShI-qCyvnRloN3fmldtecPHQNYTV8Oy_NytNZHJ77HpszwUnZgKUQ5aUMJ68HQXDhEXnV0NGPN_2k4-Ay5Q/s1311/dacia-sandero-gris-schiste-2024.jpg' },
+      { id:4, brand:'Dacia', model:'Dokker', price:200, seats:5, img:'https://www.moteur.ma/media/photos/neufs/resized/moteur.ma-dacia-dokker-985229_.jpg' },
+      { id:5, brand:'Renault', model:'Express', price:250, seats:5, img:'https://cloud.leparking.fr/2023/08/16/04/03/renault-express-blue-dci-95-start-euro6-d-full-noir_8873936627.jpg' }
+    ];
+
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    const carsEl = document.getElementById('cars');
+    const bModel = document.getElementById('bModel');
+
+    function renderFleet(){
+      carsEl.innerHTML='';
+      fleet.forEach(car=>{
+        const card = document.createElement('div'); card.className='card';
+       card.innerHTML = `
+  <div class="car-photo">
+    <img src="${car.img}" alt="${car.brand} ${car.model}" style="width:100%; height:140px; object-fit:cover; border-radius:8px;">
+  </div>
+  <div class="car-title">${car.brand} ${car.model}</div>
+  <div class="car-meta">Places: ${car.seats} • Transmission: Manuelle</div>
+  <div class="price">${car.price} MAD / jour</div>
+  <div style="margin-top:10px"><button class="btn" onclick="openModal('${car.model}')">Réserver</button></div>
+`;
+
+        carsEl.appendChild(card);
+
+        const opt = document.createElement('option'); opt.value = car.model; opt.innerText = car.brand + ' ' + car.model; bModel.appendChild(opt);
+      });
+    }
+
+    renderFleet();
+
+    // Modal controls
+    const modal = document.getElementById('modal');
+    function openModal(model){
+      document.getElementById('modalTitle').innerText = 'Réserver ' + model;
+      document.getElementById('bModel').value = model;
+      modal.classList.add('show');
+    }
+    function closeModal(){ modal.classList.remove('show'); }
+    document.getElementById('openBook').addEventListener('click',()=>openModal(fleet[0].model));
+
+    // Quick form handler (simulated)
+    document.getElementById('quickForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      alert('Demande reçue. Nous vous contacterons par WhatsApp ou téléphone pour confirmer.');
+      document.getElementById('quickForm').reset();
+    });
+
+    // Booking form (simulated)
+    document.getElementById('bookForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const data = {
+        model: document.getElementById('bModel').value,
+        name: document.getElementById('bName').value,
+        phone: document.getElementById('bPhone').value,
+        from: document.getElementById('bFrom').value,
+        to: document.getElementById('bTo').value
+      };
+      // Here you would send the data to your backend. For demo, we just show success.
+      alert('Réservation reçue pour ' + data.model + '. Nous vous contacterons bientôt.');
+      closeModal();
+      document.getElementById('bookForm').reset();
+    });
+
+    // Contact form (simulated)
+    document.getElementById('contactForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      alert('Message envoyé. Merci !');
+      document.getElementById('contactForm').reset();
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
+
+    // Pre-fill WhatsApp link (replace number with yours)
+    const wa = document.getElementById('waBtn');
+    wa.href = 'https://wa.me/212661550793?text=' + encodeURIComponent('Bonjour Over Car, je souhaite louer une voiture.');
+
+  </script>
+</body>
+</html>
