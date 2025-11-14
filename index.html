@@ -252,7 +252,70 @@
     // Pre-fill WhatsApp link (replace number with yours)
     const wa = document.getElementById('waBtn');
     wa.href = 'https://wa.me/212661550793?text=' + encodeURIComponent('Bonjour Over Car, je souhaite louer une voiture.');
+    // Quick form → WhatsApp
+document.getElementById('quickForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  let name = document.getElementById('qName').value;
+  let phone = document.getElementById('qPhone').value;
+  let from = document.getElementById('qFrom').value;
+  let to = document.getElementById('qTo').value;
+
+  let msg = 
+    "📩 Demande de devis rapide :" +
+    "%0A👤 Nom : " + name +
+    "%0A📞 Téléphone : " + phone +
+    "%0A📅 Du : " + from +
+    "%0A📅 Au : " + to;
+
+  window.open("https://wa.me/212661550793?text=" + msg, "_blank");
+  document.getElementById('quickForm').reset();
+});
+
+
+// Booking modal → WhatsApp
+document.getElementById('bookForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  let model = document.getElementById('bModel').value;
+  let name = document.getElementById('bName').value;
+  let phone = document.getElementById('bPhone').value;
+  let from = document.getElementById('bFrom').value;
+  let to = document.getElementById('bTo').value;
+
+  let msg = 
+    "🛻 Nouvelle réservation :" +
+    "%0A🚘 Modèle : " + model +
+    "%0A👤 Nom : " + name +
+    "%0A📞 Téléphone : " + phone +
+    "%0A📅 Du : " + from +
+    "%0A📅 Au : " + to;
+
+  window.open("https://wa.me/212661550793?text=" + msg, "_blank");
+
+  closeModal();
+  document.getElementById('bookForm').reset();
+});
+
+
+// Contact form → WhatsApp
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  let name = document.getElementById('cName').value;
+  let msgText = document.getElementById('cMsg').value;
+
+  let msg =
+    "📬 Nouveau message via le site :" +
+    "%0A👤 Nom : " + name +
+    "%0A💬 Message : " + msgText;
+
+  window.open("https://wa.me/212661550793?text=" + msg, "_blank");
+
+  document.getElementById('contactForm').reset();
+});
 
   </script>
 </body>
 </html>
+
